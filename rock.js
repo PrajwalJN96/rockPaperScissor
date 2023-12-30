@@ -1,44 +1,83 @@
 const computerChoiceDisplay = document.getElementById("computer--choice");
+const yourChoiceDisplay = document.getElementById("your--choice");
 const resultDisplay = document.getElementById("result");
-const possibleChoices = document.querySelectorAll("img"); 
+const possibleChoices = document.querySelectorAll("img");
 let humanChoice;
 let computerChoice;
-let result ;
+let result;
+let lives = 5;
+let points = 0;
+let point = document.getElementById("point");
+let live = document.getElementById("live");
+let mainResult = document.getElementById("mainResult");
 
-possibleChoices.forEach(possibleChoice => possibleChoice.addEventListener('click', (e) => {
+point.innerText = points;
+live.innerText = lives;
+
+possibleChoices.forEach((possibleChoice) =>
+  possibleChoice.addEventListener("click", (e) => {
     humanChoice = e.target.id;
-    console.log( e.target.id);
-    generateComputerChoice()
-    getResult()
-  }))
-function generateComputerChoice(){
-    const randomNumber = Math.floor(Math.random() * 3) + 1;
+    yourChoiceDisplay.innerText = e.target.id;
+    generateComputerChoice();
+    getResult();
+  })
+);
+function generateComputerChoice() {
+  mainResult.innerText = "";
+  const randomNumber = Math.floor(Math.random() * 3) + 1;
 
-if(randomNumber==1){
-    computerChoice = 'rock';
-}else if(randomNumber==2){
-    computerChoice = 'paper';
-}else{
-    computerChoice = 'scissors';
-}
-computerChoiceDisplay.innerHTML =computerChoice;
+  if (randomNumber == 1) {
+    computerChoice = "rock";
+  } else if (randomNumber == 2) {
+    computerChoice = "paper";
+  } else {
+    computerChoice = "scissors";
+  }
+  computerChoiceDisplay.innerHTML = computerChoice;
 }
 
-function getResult(){
-    if(computerChoice === humanChoice){
-        result = "its a draw";
-    }
-    else if(computerChoice === "rock" && humanChoice === "paper"){
-        result = "You Win 🏆"; 
-    }
-    else if(computerChoice === "scissors" && humanChoice === "rock"){
-        result = "You Win 🏆";
-    }
-    else if(computerChoice === "paper" && humanChoice === "scissors"){
-        result = "You Win 🏆";
-    }
-    else{
-        result = "You lose 💀👌";
-    }
-    resultDisplay.innerHTML= result;
+let winPoint = () => {
+  points++;
+  point.innerText = points;
+  return "you won a point";
+};
+
+function getResult() {
+  if (computerChoice === humanChoice) {
+    result = "its a draw";
+  } else if (computerChoice === "rock" && humanChoice === "paper") {
+    result = winPoint();
+  } else if (computerChoice === "scissors" && humanChoice === "rock") {
+    result = winPoint();
+  } else if (computerChoice === "paper" && humanChoice === "scissors") {
+    result = winPoint();
+  } else {
+    result = "you lost a point";
+    lives--;
+    live.innerText = lives;
+  }
+  resultDisplay.innerText = result;
+  resultsDisplay();
+}
+
+function resultsDisplay() {
+  if (lives == 0) {
+    mainResult.innerText = "You lose 💀👌";
+    lives = 5;
+    points = 0;
+    point.innerText = points;
+    live.innerText = lives;
+    resultDisplay.innerText = "";
+    yourChoiceDisplay.innerText = "";
+    computerChoiceDisplay.innerHTML = "";
+  } else if (points == 5) {
+    mainResult.innerText = "You Win 🏆";
+    lives = 5;
+    points = 0;
+    point.innerText = points;
+    live.innerText = lives;
+    resultDisplay.innerText = "";
+    yourChoiceDisplay.innerText = "";
+    computerChoiceDisplay.innerHTML = "";
+  }
 }
